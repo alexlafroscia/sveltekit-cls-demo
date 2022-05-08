@@ -1,3 +1,5 @@
+import { locals as localsAsyncStorage } from '$lib/cls';
+
 type Logger = (message: string) => void;
 
 type ConstructorFor<T> = abstract new (...args: any[]) => T;
@@ -84,6 +86,12 @@ export class DB {
 
 export const db = new DB({
 	logger: (message) => {
+		const { requestId } = localsAsyncStorage.getStore() ?? {};
+
+		if (requestId) {
+			message = `${requestId}: ${message}`;
+		}
+
 		console.log(message);
 	}
 });
